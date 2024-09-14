@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculadora Trimestral para estudantes que queiram consultar calcular suas notas e porcentual de presenças.">
+    <meta name="keywords" content="Calculadora,Escola,Notas,Estudantes">
+    <meta name="author" content="GregSaid">
+    <title>Calculadora Trimestral</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: auto;
+            background-image: url('../img/Background/Blur/MathMenu.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 10px 10px 100px rgba(0, 0, 0, 1);
+            width: 300px;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+
+        .close-btn img {
+            width: 30px;
+            height: 30px;
+            transition: transform 0.3s;
+            border: none;
+            border-radius: 50%;
+            transition: box-shadow 0.3s ease, transform 0.3s;
+        }
+
+        .close-btn:hover img {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+            box-shadow: 1px 1px 10px rgb(255, 0, 0)
+        }
+
+        h1 {
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #e0e0e0;
+        }
+        
+        input {
+            padding: 10px;
+            width: calc(100% - 22px);
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #e0e0e0;
+            box-sizing: border-box;
+            width: 80%;
+            transition: background-color 0.3s, transform 0.3s; 
+        }
+
+        input:hover {
+            background-color: #505050;
+            transform: scale(1.1);
+        }
+
+        button {
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            background-color: #505050;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 80%;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; 
+        }
+
+        button:hover {
+            box-shadow: 1px 1px 10px rgb(100, 100, 255);
+            background-color: rgb(100, 100, 255);
+            transform: scale(1.1);
+        }
+
+        .resultado {
+            font-weight: bold;
+            margin-top: 15px;
+            color: #e0e0e0;
+            white-space: pre-wrap;
+        }
+        
+        .aprovado {
+            color: #00e676;
+        }
+
+        .reprovado {
+            color: #ff5252;
+        }
+
+        .formula {
+            color: #e0e0e0;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+
+        .formula strong {
+            font-weight: bold;
+        }
+
+        .erro {
+            color: #ff5252;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="close-btn">
+            <a href="../index.html">
+                <img src="../img/Icons/Close.png">
+            </a>
+        </div>
+
+        <h1>Calculadora Trimestral</h1>
+        <form id="notaForm">
+            <label for="nota1">1º Trimestre:</label>
+            <input type="text" id="nota1" step="0.1" max="10" required oninput="LimitarNumeros(this, 4); validarValorMaximo(this, 10);" onkeypress="return CheckChar(event)">
+            
+            <label for="nota2">2º Trimestre:</label>
+            <input type="text" id="nota2" step="0.1" max="10" required oninput="LimitarNumeros(this, 4); validarValorMaximo(this, 10);" onkeypress="return CheckChar(event)">
+            
+            <label for="nota3">3º Trimestre:</label>
+            <input type="text" id="nota3" step="0.1" max="10" required oninput="LimitarNumeros(this, 4); validarValorMaximo(this, 10);" onkeypress="return CheckChar(event)">
+            
+            <button type="button" onclick="calcularNotas()">Calcular</button>
+        </form>
+        
+        <h2 id="resultado" class="resultado"></h2>
+        <p id="formula" class="formula"></p>
+        <p id="erro" class="erro"></p>
+    </div>
+    
+    <script>
+        function calcularNotas() {
+            // Converte valores do formulário para pontos e depois para números
+            var nota1 = parseFloat(document.getElementById('nota1').value.replace(',', '.'));
+            var nota2 = parseFloat(document.getElementById('nota2').value.replace(',', '.'));
+            var nota3 = parseFloat(document.getElementById('nota3').value.replace(',', '.'));
+
+            if (isNaN(nota1) || isNaN(nota2) || isNaN(nota3)) {
+                document.getElementById('erro').innerText = 'Por favor, insira valores válidos.';
+                document.getElementById('resultado').innerText = '';
+                document.getElementById('formula').innerText = '';
+                return;
+            }
+
+            var resultado = (nota1 * 3 + nota2 * 3 + nota3 * 4) / 10;
+            
+            var status = resultado >= 6 ? 'Aprovado!' : 'Reprovado.';
+            var statusClass = resultado >= 6 ? 'aprovado' : 'reprovado';
+            var explicacao = resultado >= 6 
+                ? `Você tirou "${resultado.toFixed(2).replace('.', ',')}" e foi aprovado porque a média é "6,00".` 
+                : `Você tirou "${resultado.toFixed(2).replace('.', ',')}" e foi reprovado porque a média é "6,00".`;
+
+            var formulaTexto = `<strong>Fórmula utilizada:</strong>\n(${nota1.toFixed(1).replace('.', ',')} * 3 + ${nota2.toFixed(1).replace('.', ',')} * 3 + ${nota3.toFixed(1).replace('.', ',')} * 4) / 10 = ${resultado.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resultado').innerText = `Resultado: ${resultado.toFixed(2).replace('.', ',')}\n${status}`;
+            document.getElementById('resultado').className = 'resultado ' + statusClass;
+            document.getElementById('formula').innerHTML = formulaTexto;
+        }
+
+        function LimitarNumeros(campo, maxDigitos) {
+            let valor = campo.value;
+    
+            // Substitui vírgulas por pontos
+            valor = valor.replace(',', '.');
+    
+            // Verifica se o valor já contém um ponto decimal
+            let partes = valor.split('.');
+            if (partes.length > 2) {
+                // Se houver mais de um ponto decimal, remova os extras
+                valor = partes.shift() + '.' + partes.join('');
+                campo.value = valor;
+            }
+
+            // Limita o número de dígitos decimais a 1
+            if (partes[1] && partes[1].length > 1) {
+                partes[1] = partes[1].slice(0, 1);
+                valor = partes.join('.');
+                campo.value = valor;
+            }
+
+            // Limita o comprimento total do valor (contando ponto decimal)
+            if (valor.length > maxDigitos) {
+                campo.value = valor.slice(0, maxDigitos);
+            }      
+        }
+
+        function validarValorMaximo(campo, maxValor) {
+            let valor = parseFloat(campo.value.replace(',', '.'));
+            if (valor < 0) {
+                campo.value = "";
+                document.getElementById('erro').innerText = 'Nota não pode ser negativa. Corrigida para 0.';
+            } else if (valor > maxValor) {
+                campo.value = maxValor;
+                document.getElementById('erro').innerText = `Nota corrigida para o máximo permitido de ${maxValor}.`;
+            } else {
+                document.getElementById('erro').innerText = '';
+            }
+        }
+
+        function CheckChar(e) {
+            // Obtém o caractere pressionado
+            const char = e.key;
+
+            // Permite apenas números, pontos decimais e vírgulas
+            if (/[\d,.]/.test(char)) {
+                return true;
+            } else {
+                e.preventDefault();
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>
