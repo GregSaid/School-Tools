@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Calculadora Trimestral para estudantes que queiram consultar calcular suas notas e porcentual de presenças."
+        />
+        <meta name="keywords" content="Calculadora,Escola,Notas,Estudantes" />
+        <meta name="author" content="GregSaid" />
+        <title>Quarterly Calculator</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #e0e0e0;
+                margin: 30px;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                overflow: auto;
+                background-image: url('../img/Background/Blur/MathMenu.jpg');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+
+                position: relative;
+                background-color: #1e1e1e;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 10px 10px 100px rgba(0, 0, 0, 1);
+                width: 300px;
+                text-align: center;
+                border: 2px solid #111111;
+                transition: background-color 0.3s, border 0.3s;
+            }
+
+            .container.red {
+                background-color: rgb(100, 0, 0);
+                border: 2px solid #ff0000;
+                animation: shake 0.5s ease;
+            }
+
+            .container.green {
+                background-color: rgb(0, 100, 0);
+                border: 2px solid #00ff00;
+                animation: rubberband 0.5s ease;
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                cursor: pointer;
+            }
+
+            .close-btn img {
+                width: 30px;
+                height: 30px;
+                filter: grayscale();
+                transition: filter 0.3s ease, transform 0.3s;
+            }
+
+            .close-btn:hover img {
+                transform: scale(1.1);
+                filter: drop-shadow(0px 0px 5px rgb(255, 0, 0));
+            }
+
+            h1 {
+                color: #e0e0e0;
+                margin-bottom: 20px;
+            }
+
+            label {
+                display: block;
+                margin: 10px 0 5px;
+                color: #e0e0e0;
+            }
+
+            input {
+                padding: 10px;
+                border: none;
+                outline: rgba(0, 0, 0, 0);
+                border-radius: 4px;
+                background-color: rgb(51, 51, 51);
+                color: #e0e0e0;
+                text-align: center;
+                box-sizing: border-box;
+                width: 80%;
+                transition: background-color 0.3s, transform 0.3s, outline 0.3s;
+            }
+
+            input.green {
+                background-color: rgb(0, 50, 0);
+            }
+
+            input.red {
+                background-color: rgb(50, 0, 0);
+            }
+
+            input:focus {
+                outline: 1px solid #ffffff;
+                outline-offset: 2px;
+            }
+
+            input:focus.red {
+                outline: 1px solid #ff0000;
+            }
+
+            input:focus.green {
+                outline: 1px solid #00ff00;
+            }
+
+            input:hover {
+                background-color: #505050;
+                transform: scale(1.1);
+            }
+
+            input:hover.red {
+                background-color: rgb(255, 0, 0);
+            }
+
+            input:hover.green {
+                background: #00ff00;
+            }
+
+            /* Esconde o Spinners de Input Numericos*/
+            input[type='number']::-webkit-inner-spin-button,
+            input[type='number']::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            button {
+                padding: 10px;
+                width: 100%;
+                border: none;
+                border-radius: 4px;
+                background-color: #505050;
+                color: #ffffff;
+                font-size: 16px;
+                cursor: pointer;
+                margin-top: 30px;
+                width: 80%;
+                transition: background-color 0.3s, transform 0.3s,
+                    box-shadow 0.3s;
+            }
+
+            button.red {
+                background-color: rgb(50, 0, 0);
+            }
+
+            button.green {
+                background-color: rgb(0, 50, 0);
+            }
+
+            button:hover {
+                box-shadow: 0px 0px 10px rgb(100, 100, 255);
+                background-color: rgb(100, 100, 255);
+                transform: scale(1.1);
+            }
+
+            button:hover.red {
+                box-shadow: 0px 0px 10px rgb(255, 0, 0);
+                background-color: rgb(255, 0, 0);
+            }
+
+            button:hover.green {
+                box-shadow: 0px 0px 10px #00ff00;
+                background-color: #00ff00;
+            }
+
+            button:disabled {
+                cursor: not-allowed;
+            }
+
+            .resultado {
+                font-weight: bold;
+                margin-top: 15px;
+                color: #e0e0e0;
+                white-space: pre-wrap;
+            }
+
+            .aprovado {
+                filter: drop-shadow(0px 0px 10px #00ff00);
+                color: #00ff00;
+            }
+
+            .reprovado {
+                filter: drop-shadow(0px 0px 10px #ff0000);
+                color: #ff0000;
+            }
+
+            .erro {
+                color: #ff0000;
+                font-size: 16px;
+                margin-top: 10px;
+                font-weight: bold;
+            }
+
+            .fade-out {
+                opacity: 0;
+                transition: opacity 1s ease;
+            }
+
+            @keyframes rubberband {
+                0% {
+                    transform: scaleX(1);
+                }
+                40% {
+                    transform: scaleX(1.12) scaleY(0.75);
+                }
+                55% {
+                    transform: scaleX(0.85) scaleY(1);
+                }
+                65% {
+                    transform: scaleX(1.09) scaleY(0.85);
+                }
+                75% {
+                    transform: scaleX(0.9) scaleY(1);
+                }
+                90% {
+                    transform: scaleX(1.05) scaleY(0.95);
+                }
+                100% {
+                    transform: scaleX(1) scaleY(1);
+                }
+            }
+
+            @keyframes shake {
+                0% {
+                    transform: translateX(0);
+                    timing-function: ease-in;
+                }
+                25% {
+                    transform: translateX(-5px);
+                    timing-function: ease-out;
+                }
+                50% {
+                    transform: translateX(5px);
+                    timing-function: ease-in;
+                }
+                75% {
+                    transform: translateX(-5px);
+                    timing-function: ease-out;
+                }
+                100% {
+                    transform: translateX(0);
+                    timing-function: ease-in;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="close-btn">
+                <a href="../index.html">
+                    <img src="../img/Icons/Close.png" />
+                </a>
+            </div>
+
+            <h1>Calculadora Trimestral</h1>
+            <form id="notaForm">
+                <label for="nota1">1º Trimestre:</label>
+                <input
+                    type="number"
+                    inputmode="numeric"
+                    id="nota1"
+                    step="0.01"
+                    max="10"
+                    required
+                    oninput="LimitarNumeros(this, 4, 1); validarvalorMaximo(this, 10); ocultarResultado(); OcultarAprovado();"
+                    onkeypress="return CheckChar(event)"
+                />
+
+                <label for="nota2">2º Trimestre:</label>
+                <input
+                    type="number"
+                    inputmode="numeric"
+                    id="nota2"
+                    step="0.01"
+                    max="10"
+                    required
+                    oninput="LimitarNumeros(this, 4, 1); validarvalorMaximo(this, 10); ocultarResultado(); OcultarAprovado();"
+                    onkeypress="return CheckChar(event)"
+                />
+
+                <label for="nota3">3º Trimestre:</label>
+                <input
+                    type="number"
+                    inputmode="numeric"
+                    id="nota3"
+                    step="0.01"
+                    max="10"
+                    required
+                    oninput="LimitarNumeros(this, 4, 1); validarvalorMaximo(this, 10); ocultarResultado(); OcultarAprovado();"
+                    onkeypress="return CheckChar(event)"
+                />
+
+                <button type="button" onclick="calcularNotas()">
+                    Calcular
+                </button>
+            </form>
+
+            <p id="erro" class="erro"></p>
+            <h2 id="resultado" class="resultado"></h2>
+        </div>
+
+        <script>
+            function calcularNotas() {
+                ocultarResultado(); // Limpa resultados anteriores
+                OcultarAprovado();
+
+                // Converte valores do formulário para pontos e depois para números
+                var nota1 = parseFloat(
+                    document.getElementById('nota1').value.replace(',', '.')
+                );
+                var nota2 = parseFloat(
+                    document.getElementById('nota2').value.replace(',', '.')
+                );
+                var nota3 = parseFloat(
+                    document.getElementById('nota3').value.replace(',', '.')
+                );
+
+                if (isNaN(nota1) || isNaN(nota2) || isNaN(nota3)) {
+                    ExibirErro('Por favor, insira valores válidos.');
+                    document.getElementById('resultado').innerText = '';
+                    return;
+                }
+
+                var resultado = (nota1 * 3 + nota2 * 3 + nota3 * 4) / 10;
+
+                var status = resultado >= 6 ? 'Aprovado!' : 'Reprovado.';
+                var statusClass = resultado >= 6 ? 'aprovado' : 'reprovado';
+
+                if (resultado >= 6 && !AprovadoBool) {
+                    Aprovado();
+                } else if (resultado < 6 && AprovadoBool) {
+                    OcultarAprovado();
+                }
+
+                document.getElementById(
+                    'resultado'
+                ).innerText = `Resultado: ${resultado
+                    .toFixed(2)
+                    .replace(',', '.')}\n${status}`;
+                document.getElementById('resultado').className =
+                    'resultado ' + statusClass;
+            }
+
+            function LimitarNumeros(campo, maxDigitos, MaxDecimais) {
+                let valor = campo.value;
+
+                valor = valor.replace(',', '.');
+
+                // Verifica se o valor já contém um ponto decimal
+                let partes = valor.split('.');
+                if (partes.length > 2) {
+                    // Se houver mais de um ponto decimal, remova os extras
+                    valor = partes.shift() + '.' + partes.join('');
+                    campo.value = valor;
+                }
+
+                // Limita o número de dígitos decimais a 1
+                if (partes[1] && partes[1].length > MaxDecimais) {
+                    partes[1] = partes[1].slice(0, MaxDecimais);
+                    valor = partes.join('.');
+                    campo.value = valor;
+                }
+
+                // Limita o comprimento total do valor (contando ponto decimal)
+                if (valor.length > maxDigitos) {
+                    campo.value = valor.slice(0, maxDigitos);
+                }
+            }
+
+            function validarvalorMaximo(campo, maxvalor) {
+                let valor = parseFloat(campo.value.replace(',', '.'));
+                if (valor < 0) {
+                    campo.value = '';
+                    ExibirErro('Nota não pode ser negativa. Corrigida para 0.');
+                } else if (valor > maxvalor) {
+                    campo.value = maxvalor;
+                    ExibirErro(
+                        `Não é possivel colocar notas maiores que ${maxvalor}!!!`
+                    );
+                } else {
+                    document.getElementById('erro').innerText = '';
+                    OcultarErro();
+                }
+            }
+
+            function CheckChar(e) {
+                const char = e.key;
+
+                // Permite apenas números
+                if (/[\d]/.test(char)) {
+                    return true; // Aceita números
+                }
+
+                // Permite a vírgula ou ponto apenas se o input já contém um número
+                const input = e.target.value;
+                if (
+                    (char === ',' || char === '.') &&
+                    input.length > 0 &&
+                    /\d/.test(input)
+                ) {
+                    return true; // Aceita vírgula ou ponto se já houver um número
+                }
+
+                // Previne a entrada de qualquer outro caractere
+                e.preventDefault();
+                return false;
+            }
+
+            let AprovadoBool = false;
+
+            function Aprovado() {
+                AprovadoBool = true;
+
+                const inputs = document.querySelectorAll('input');
+
+                inputs.forEach((input) => input.classList.add('green'));
+                document.querySelector('.container').classList.add('green');
+                document.querySelector('button').classList.add('green');
+
+                /*setTimeout(() => {
+                                        AprovadoBool = false;
+                                        OcultarAprovado();
+                                    }, 5000); */
+            }
+
+            function OcultarAprovado() {
+                const inputs = document.querySelectorAll('input');
+
+                inputs.forEach((input) => input.classList.remove('green'));
+                document.querySelector('.container').classList.remove('green');
+                document.querySelector('button').classList.remove('green');
+
+                AprovadoBool = false;
+            }
+
+            function ocultarResultado() {
+                document.getElementById('resultado').innerText = '';
+                document.getElementById('resultado').className = 'resultado';
+            }
+
+            let erroBloqueado = false;
+
+            function ExibirErro(mensagem) {
+                if (erroBloqueado) return;
+
+                erroBloqueado = true;
+
+                document.querySelector('button').disabled = true;
+                const erroElement = document.getElementById('erro');
+                erroElement.innerText = mensagem || '';
+                erroElement.classList.add('erro');
+
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach((input) => input.classList.add('red'));
+                document.querySelector('.container').classList.add('red');
+                document.querySelector('button').classList.add('red');
+
+                // Ocultar erro automaticamente após 5 segundos
+                setTimeout(() => {
+                    OcultarErro();
+                    erroBloqueado = false; // Libera a função
+                }, 5000); // 5000 ms = 5 segundos
+            }
+
+            function OcultarErro(mensagem) {
+                document.querySelector('button').disabled = false;
+                var inputs = document.querySelectorAll('input');
+                inputs.forEach((input) => input.classList.remove('red'));
+                document.querySelector('.container').classList.remove('red');
+                document.querySelector('button').classList.remove('red');
+
+                document.getElementById('erro').innerText = '';
+                erroBloqueado = false;
+            }
+        </script>
+    </body>
+</html>

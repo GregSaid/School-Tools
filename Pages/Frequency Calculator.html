@@ -1,271 +1,515 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculadora de Presença para estudantes que desejam calcular o percentual de presença e a recuperação de períodos necessária.">
-    <meta name="keywords" content="Calculadora, Escola, Presença, Frequency Calculator, Estudantes">
-    <meta name="author" content="GregSaid">
-    <title>Frequency Calculator</title>
-    <style>
-        .container {
-            position: relative;
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 10px 10px 100px rgba(0, 0, 0, 1);
-            width: 300px;
-            text-align: center;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Calculadora de Presença para estudantes que desejam calcular o percentual de presença e a recuperação de períodos necessária."
+        />
+        <meta
+            name="keywords"
+            content="Calculadora, Escola, Presença, Frequency Calculator, Estudantes"
+        />
+        <meta name="author" content="GregSaid" />
+        <title>Frequency Calculator</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #e0e0e0;
+                margin: 10px;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                overflow: auto;
+                background-image: url('../img/Background/FrequencyMenu.jpeg');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
 
-        .close-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            cursor: pointer;
-        }
+            .container {
+                position: relative;
+                background-color: #1e1e1e;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 10px 10px 100px rgba(0, 0, 0, 1);
+                width: 300px;
+                text-align: center;
+                border: 2px solid #111111;
+            }
 
-        .close-btn img {
-            width: 30px;
-            height: 30px;
-            transition: transform 0.3s;
-            border: none;
-            border-radius: 50%;
-            transition: box-shadow 0.3s ease, transform 0.3s;
-        }
+            .container.red {
+                background-color: rgb(100, 0, 0);
+                border: 2px solid #ff0000;
+                animation: shake 0.5s ease;
+            }
 
-        .close-btn:hover img {
-            -webkit-transform: scale(1.1);
-            transform: scale(1.1);
-            box-shadow: 1px 1px 10px rgb(255, 0, 0)
-        }
+            .container.green {
+                background-color: rgb(0, 100, 0);
+                border: 2px solid rgb(0, 255, 0);
+                animation: rubberband 0.5s ease;
+            }
 
-        .resultado, .erro {
-            font-weight: bold;
-            color: #e0e0e0;
-            margin-top: 15px;
-            text-align: center;
-        }
+            .close-btn {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                cursor: pointer;
+            }
 
-        .resultado {
-            margin-bottom: 15px;
-        }
+            .close-btn img {
+                width: 30px;
+                height: 30px;
+                filter: grayscale();
+                transition: transform 0.3s, filter 0.3s ease;
+            }
 
-        .aprovado {
-            color: #00e676;
-        }
+            .close-btn:hover img {
+                transform: scale(1.1);
+                filter: drop-shadow(0px 0px 5px rgb(255, 0, 0));
+            }
 
-        .reprovado {
-            color: #ff5252;
-        }
+            .resultado,
+            .erro {
+                font-weight: bold;
+                color: #e0e0e0;
+                margin-top: 15px;
+                text-align: center;
+            }
 
-        .erro {
-            color: #ff5252;
-            font-size: 16px;
-            margin-bottom: 15px
-        }
+            .resultado {
+                margin-bottom: 15px;
+            }
 
-        body {
-            font-family: Arial, sans-serif;
-            
-            color: #e0e0e0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: auto;
+            .aprovado {
+                color: #00ff00;
+                filter: drop-shadow(0px 0px 10px #00ff00);
+            }
 
-            background-image: url('../img/Background/FrequencyMenu.jpeg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            margin: 50px;
-        }
+            .reprovado {
+                color: #ff0000;
+                filter: drop-shadow(0px 0px 10px #ff0000);
+            }
 
-        h1 {
-            color: #e0e0e0;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            color: #e0e0e0;
-            text-align: center;
-        }
+            .erro {
+                color: #ff0000;
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
 
-        input {
-            padding: 8px;
-            width: calc(100% - 16px);
-            border: none;
-            border-radius: 4px;
-            background-color: #333;
-            color: #e0e0e0;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.3s;
-        }
+            h1 {
+                color: #e0e0e0;
+                margin-bottom: 15px;
+                text-align: center;
+            }
 
-        input:hover {
-            background: #505050;
-            transform: scale(1.1);
-        }
+            label {
+                display: block;
+                margin: 10px 0 5px;
+                color: #e0e0e0;
+                text-align: center;
+            }
 
-        button {
-            padding: 10px;
-            width: calc(100% - 16px);
-            border: none;
-            border-radius: 4px;
-            background-color: #505050;
-            color: #ffffff;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 30px;
-            transition: box-shadow 0.3s ease, transform 0.3s;
-        }
+            input {
+                padding: 10px;
+                border: none;
+                outline: rgba(0, 0, 0, 0);
+                border-radius: 4px;
+                background-color: rgb(51, 51, 51);
+                color: #e0e0e0;
+                text-align: center;
+                box-sizing: border-box;
+                width: 80%;
+                transition: background-color 0.3s, transform 0.3s, outline 0.3s;
+            }
 
-        button:hover {
-            box-shadow: 1px 1px 10px rgb(100, 100, 255);
-            background-color: rgb(100, 100, 255);
-            transform: scale(1.1);
-        }
+            input.red {
+                background-color: rgb(50, 0, 0);
+            }
 
-        div form {
-            text-align: center;
-            align-items: center;
-            justify-content: center;
-        }
+            input.green {
+                background-color: rgb(0, 50, 0);
+            }
 
-        div form input {
-            text-align: center;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="close-btn">
-            <a href="../index.html">
-                <img src="../img/Icons/Close.png" alt="Close">
-            </a>
+            input:focus {
+                outline: 1px solid #ffffff;
+                outline-offset: 2px;
+            }
+
+            input:focus.red {
+                outline: 1px solid #ff0000;
+            }
+
+            input:focus.green {
+                outline: 1px solid #00ff00;
+            }
+
+            input:hover {
+                background: #505050;
+                transform: scale(1.1);
+            }
+
+            input:hover.red {
+                background-color: rgb(255, 0, 0);
+            }
+
+            input:hover.green {
+                background-color: #00ff00;
+            }
+
+            input[type='number']::-webkit-inner-spin-button,
+            input[type='number']::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            button {
+                padding: 10px;
+                width: 100%;
+                border: none;
+                border-radius: 4px;
+                background-color: #505050;
+                color: #ffffff;
+                font-size: 16px;
+                cursor: pointer;
+                margin-top: 30px;
+                width: 80%;
+                transition: background-color 0.3s, transform 0.3s,
+                    box-shadow 0.3s;
+            }
+
+            button.red {
+                background-color: rgb(50, 0, 0);
+            }
+
+            button.green {
+                background-color: rgb(0, 50, 0);
+            }
+
+            button:hover {
+                box-shadow: 0px 0px 10px rgb(100, 100, 255);
+                background-color: rgb(100, 100, 255);
+                transform: scale(1.1);
+            }
+
+            button:hover.red {
+                box-shadow: 0px 0px 10px rgb(255, 0, 0);
+                background-color: rgb(255, 0, 0);
+            }
+
+            button:hover.green {
+                box-shadow: 0px 0px 10px #00ff00;
+                background-color: #00ff00;
+            }
+
+            button:disabled {
+                cursor: not-allowed;
+            }
+
+            div form {
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #Small {
+                font-size: medium !important;
+            }
+
+            @keyframes shake {
+                0% {
+                    transform: translateX(0);
+                }
+                25% {
+                    transform: translateX(-5px);
+                }
+                50% {
+                    transform: translateX(5px);
+                }
+                75% {
+                    transform: translateX(-5px);
+                }
+                100% {
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes rubberband {
+                0% {
+                    transform: scaleX(1);
+                }
+                40% {
+                    transform: scaleX(1.12) scaleY(0.75);
+                }
+                55% {
+                    transform: scaleX(0.85) scaleY(1);
+                }
+                65% {
+                    transform: scaleX(1.09) scaleY(0.85);
+                }
+                75% {
+                    transform: scaleX(0.9) scaleY(1);
+                }
+                90% {
+                    transform: scaleX(1.05) scaleY(0.95);
+                }
+                100% {
+                    transform: scaleX(1) scaleY(1);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="close-btn">
+                <a href="../index.html">
+                    <img src="../img/Icons/Close.png" alt="Close" />
+                </a>
+            </div>
+
+            <h1>Calculadora de frequência</h1>
+            <form id="presencaForm">
+                <label for="total-aulas">Número total de aulas:</label>
+                <input
+                    type="number"
+                    id="total-aulas"
+                    inputmode="numeric"
+                    required
+                    oninput="validarNumerosInteiros(this); atualizarPresencas(); OcultarAprovado(); OcultarResultado();"
+                    onkeypress="return CheckChar(event)"
+                />
+
+                <label for="presencas">Número total de presenças:</label>
+                <input
+                    type="number"
+                    id="presencas"
+                    inputmode="numeric"
+                    required
+                    oninput="validarNumerosInteiros(this); validarPresencas(); OcultarAprovado(); OcultarResultado();"
+                    onkeypress="return CheckChar(event)"
+                />
+
+                <label for="percentual-minimo"
+                    >Percentual mínimo de presença:</label
+                >
+                <input
+                    type="number"
+                    id="percentual-minimo"
+                    inputmode="numeric"
+                    required
+                    oninput="LimitarNumeros(this); validarvalorMaximo(this); OcultarAprovado(); OcultarResultado();"
+                    onkeypress="return CheckChar(event)"
+                />
+
+                <button type="button" onclick="calcular()">Calcular</button>
+            </form>
+
+            <p id="erro" class="erro"></p>
+            <h2 id="resultado" class="resultado"></h2>
         </div>
+        <script>
+            function calcular() {
+                const totalAulas = parseInt(
+                    document.getElementById('total-aulas').value,
+                    10
+                );
+                const presencas = parseInt(
+                    document.getElementById('presencas').value,
+                    10
+                );
+                const percentualMinimo = parseFloat(
+                    document
+                        .getElementById('percentual-minimo')
+                        .value.replace(',', '.')
+                );
 
-        <h1>Calculadora de frequência</h1>
-        <form id="presencaForm">
-            <label for="total-aulas">Número total de aulas:</label>
-            <input type="text" id="total-aulas" required oninput="validarNumerosInteiros(this); atualizarPresencas() ">
-            
-            <label for="presencas">Número total de presenças:</label>
-            <input type="text" id="presencas" required oninput="validarNumerosInteiros(this); validarPresencas()">
-            
-            <label for="percentual-minimo">Percentual mínimo de presença:</label>
-            <input type="text" id="percentual-minimo" required oninput="validarPercentual(this)">
-            
-            <button type="button" onclick="calcular()">Calcular</button>
-        </form>
-        
-        <p id="erro" class="erro"></p>
-        <h2 id="resultado" class="resultado"></h2>
-    </div>
-    <script>
-        function validarNumerosInteiros(campo) {
-            // Permite apenas números inteiros
-            campo.value = campo.value.replace(/[^0-9]/g, '');
-        }
-        
-        function validarPercentual(campo) {
-            // Permite apenas números, ponto, vírgula e limita o comprimento total a 4 caracteres
-            campo.value = campo.value.replace(/[^0-9.,]/g, '');
+                AprovadoBool = false;
+                ReprovadoBool = false;
+                OcultarAprovado();
 
-            // Substitui múltiplos pontos ou vírgulas
-            let partes = campo.value.split(/[,]/);
-            if (partes.length > 2) {
-                campo.value = partes.shift() + ',' + partes.join('');
-            }
+                if (
+                    isNaN(totalAulas) ||
+                    isNaN(presencas) ||
+                    isNaN(percentualMinimo) ||
+                    totalAulas <= 0 ||
+                    presencas < 0 ||
+                    percentualMinimo <= 0 ||
+                    percentualMinimo > 100
+                ) {
+                    ExibirErro('Por favor, insira valores válidos.');
+                    document.getElementById('resultado').innerText = '';
+                    return;
+                }
 
-            // Limita os dígitos decimais a 2 e comprimento total a 4 caracteres
-            if (partes.length === 2 && partes[1].length > 2) {
-                partes[1] = partes[1].slice(0, 2);
-                campo.value = partes.join(',');
-            }
+                const percentualPresenca =
+                    totalAulas > 0 ? (presencas / totalAulas) * 100 : 0;
+                const aprovado = percentualPresenca >= percentualMinimo;
 
-            if (campo.value.length > 4) {
-                campo.value = campo.value.slice(0, 4);
-            }
+                const presencaNecessaria =
+                    (percentualMinimo / 100) * totalAulas;
+                const presencasNecessarias = Math.max(
+                    0,
+                    presencaNecessaria - presencas
+                );
+                const periodosNecessarios = Math.ceil(presencasNecessarias);
 
-            // Verifica se o valor é maior que 100
-            if (parseFloat(campo.value.replace(',', '.')) > 100) {
-                document.getElementById('erro').innerText = 'A porcentagem deve ser igual ou inferior a 100.';
-                campo.value = campo.value.slice(0, -1); // Remove o último caractere
-            } else {
+                const resultadoDiv = document.getElementById('resultado');
+                resultadoDiv.innerHTML =
+                    `<p><strong>Presença:</strong> ${percentualPresenca.toFixed(
+                        2
+                    )}%</p>` +
+                    (aprovado
+                        ? ''
+                        : `<p id="Small"><strong>Períodos necessários:</strong> ${periodosNecessarios}</p>`);
+
+                resultadoDiv.className =
+                    'resultado ' + (aprovado ? 'aprovado' : 'reprovado');
+
+                if (aprovado && !AprovadoBool) {
+                    Aprovado();
+                } else if (!aprovado && AprovadoBool) {
+                    OcultarAprovado();
+                }
+
                 document.getElementById('erro').innerText = '';
             }
-        }
 
-        function calcular() {
-            const totalAulas = parseInt(document.getElementById('total-aulas').value, 10);
-            const presencas = parseInt(document.getElementById('presencas').value, 10);
-            const percentualMinimo = parseFloat(document.getElementById('percentual-minimo').value.replace(',', '.'));
+            let AprovadoBool = false;
+            let ReprovadoBool = false;
 
-            if (isNaN(totalAulas) || isNaN(presencas) || isNaN(percentualMinimo) ||
-                totalAulas <= 0 || presencas < 0 || percentualMinimo <= 0 || percentualMinimo > 100) {
-                document.getElementById('erro').innerText = 'Por favor, insira valores válidos para número total de aulas, presenças e percentual mínimo.';
+            function Aprovado() {
+                AprovadoBool = true;
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach((input) => input.classList.add('green'));
+                document.querySelector('.container').classList.add('green');
+                document.querySelector('button').classList.add('green');
+            }
+
+            function OcultarAprovado() {
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach((input) => input.classList.remove('green'));
+                document.querySelector('.container').classList.remove('green');
+                document.querySelector('button').classList.remove('green');
+                AprovadoBool = false;
+            }
+
+            function ExibirErro(mensagem) {
+                if (erroBloqueado) return;
+                erroBloqueado = true;
+                document.querySelector('button').disabled = true;
+                const erroElement = document.getElementById('erro');
+                erroElement.innerText = mensagem || '';
+                erroElement.classList.add('erro');
+
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach((input) => input.classList.add('red'));
+                document.querySelector('.container').classList.add('red');
+                document.querySelector('button').classList.add('red');
+
+                setTimeout(() => {
+                    OcultarErro();
+                    erroBloqueado = false;
+                }, 5000);
+            }
+
+            function OcultarErro() {
+                document.querySelector('button').disabled = false;
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach((input) => input.classList.remove('red'));
+                document.querySelector('.container').classList.remove('red');
+                document.querySelector('button').classList.remove('red');
+                document.getElementById('erro').innerText = '';
+            }
+
+            function OcultarResultado() {
                 document.getElementById('resultado').innerText = '';
-                return;
             }
-            
-            // Calculando o percentual de presença
-            const percentualPresenca = (presencas / totalAulas) * 100;
 
-            // Verificando se está aprovado ou reprovado
-            const aprovado = percentualPresenca >= percentualMinimo;
+            // Funções de validação
+            const maxvalor = 100;
+            const maxDigitos = 5;
+            const maxDecimais = 2;
+            let erroBloqueado = false;
 
-            // Calculando o número de aulas necessárias para recuperação
-            const presencaNecessaria = (percentualMinimo / 100) * totalAulas;
-            const presencasNecessarias = Math.max(0, presencaNecessaria - presencas);
-            
-            // Períodos necessários para recuperação
-            const periodosNecessarios = Math.ceil(presencasNecessarias);
-            
-            // Garante que o número de períodos não seja negativo
-            const periodosNecessariosCorrigidos = Math.max(0, periodosNecessarios);
-
-            
-
-            // Resultados Front
-            const resultadoDiv = document.getElementById('resultado');
-            resultadoDiv.innerHTML = ` 
-                <p><strong>Presença:</strong> ${percentualPresenca.toFixed(2)}%</p>
-                ${!aprovado ? `<p><strong>Períodos necessários:</strong> ${periodosNecessariosCorrigidos}</p>` : ''}
-            `;  /* <p><strong>Status:</strong> ${aprovado ? 'Aprovado' : 'Reprovado'}</p> | Removido para melhor visualização. */
-
-            resultadoDiv.className = `resultado ${aprovado ? 'aprovado' : 'reprovado'}`;
-            
-            document.getElementById('erro').innerText = '';
-        }
-
-        function atualizarPresencas() {
-            // Atualiza a validade do campo "presenças" conforme o total de aulas
-            validarPresencas();
-        }
-
-        function validarPresencas() {
-            const totalAulas = parseInt(document.getElementById('total-aulas').value, 10);
-            const presencas = parseInt(document.getElementById('presencas').value, 10);
-
-            if (!isNaN(totalAulas) && !isNaN(presencas) && presencas > totalAulas) {
-                document.getElementById('erro').innerText = 'O número de presenças não pode ser maior que o número total de aulas.';
-                document.getElementById('presencas').value = totalAulas; // Corrige o valor das presenças
-            } else {
-                document.getElementById('erro').innerText = '';
+            function validarNumerosInteiros(campo) {
+                campo.value = campo.value.replace(/[^0-9]/g, '');
             }
-        }
-    </script>
-</body>
+
+            function LimitarNumeros(campo) {
+                let valor = campo.value.replace(',', '.');
+                let partes = valor.split('.');
+                if (partes.length > 2) {
+                    valor = partes.shift() + '.' + partes.join('');
+                    campo.value = valor;
+                }
+                if (partes[1] && partes[1].length > maxDecimais) {
+                    partes[1] = partes[1].slice(0, maxDecimais);
+                    valor = partes.join('.');
+                    campo.value = valor;
+                }
+                if (valor.length > maxDigitos) {
+                    campo.value = valor.slice(0, maxDigitos);
+                }
+            }
+
+            function validarvalorMaximo(campo) {
+                let valor = parseFloat(campo.value.replace(',', '.'));
+                if (valor < 0) {
+                    campo.value = '';
+                    ExibirErro(
+                        'Frequência não pode ser negativa. Corrigida para 0.'
+                    );
+                } else if (valor > maxvalor) {
+                    campo.value = maxvalor;
+                    ExibirErro(
+                        `Frequência corrigida para o máximo permitido de ${maxvalor}.`
+                    );
+                } else {
+                    OcultarErro();
+                }
+            }
+
+            function CheckChar(e) {
+                const char = e.key;
+                if (/[\d,.]/.test(char)) {
+                    return true;
+                } else {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+
+            function atualizarPresencas() {
+                validarPresencas();
+            }
+
+            function validarPresencas() {
+                const totalAulas = parseInt(
+                    document.getElementById('total-aulas').value,
+                    10
+                );
+                const presencas = parseInt(
+                    document.getElementById('presencas').value,
+                    10
+                );
+                if (
+                    !isNaN(totalAulas) &&
+                    !isNaN(presencas) &&
+                    presencas > totalAulas
+                ) {
+                    ExibirErro(
+                        'O número de presenças não pode ser maior que o número total de aulas.'
+                    );
+                    document.getElementById('presencas').value = totalAulas; // Corrige o valor das presenças
+                } else {
+                    document.getElementById('erro').innerText = '';
+                    OcultarErro();
+                }
+            }
+        </script>
+    </body>
 </html>
