@@ -1,4 +1,4 @@
-## Version 0.6 | Change Log
+## Version 0.7 | Change Log
 
 -   _Bugs fixes._ (-)
 -   _Graphical improvement of the interface using_ **CSS.** (+)
