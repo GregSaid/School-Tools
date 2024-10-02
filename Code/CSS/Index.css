@@ -71,7 +71,7 @@ body {
     display: flex;
     margin: 50px;
 
-    background-image: url('/img/Background/Blur/ToolsMenu.jpg');
+    background-image: url('./img/Background/Blur/ToolsMenu.jpg');
     background-size: cover;
     background-position: none;
     background-repeat: no-repeat;
